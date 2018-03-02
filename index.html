@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>CLR | Bird Migration US Cities</title>
 
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
 
@@ -21,8 +24,28 @@
 
 <body>
 
-    <!-- Leaflet map container -->
-    <div id="map"></div>
+    <div id="titleArea">
+        <div id="titleText">
+            <div id="title1">WHERE DID YOU GO</div>
+            <div id="title2">JUNCO?</div>
+        </div>
+        <img src="img/dark-eyed-junco-original.jpg" id="juncoPic">
+        <div id="infoCollapse">
+            <div id="infoTitleBreak"></div>
+            <div id="infoText">
+                Info Text
+                <br>
+                <br>
+                <br>
+                <br> Info Text
+            </div>
+        </div>
+    </div>
+
+    <div id="mapWrapper">
+        <div id="map"></div>
+        <!-- Leaflet map -->
+    </div>
 
     <!-- Main Leaflet JS (Must be after #map in DOM -->
     <script src="js/leaflet.js"></script>
