@@ -1,5 +1,12 @@
 // Initialize Leaflet map
-var mymap = L.map('map').setView([41, -95], 5);
+
+var mymap = L.map('map', {
+    minZoom: 4,
+    maxZoom: 13
+});
+
+
+mymap.setView([41, -96], 5);
 
 // Basemap
 var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
@@ -28,19 +35,28 @@ function zoomToFeature(e) {
 //};
 
 //calculate the radius of each proportional symbol
-function calcPropRadius(attValue) {
+function calcPropRadius(attValue, attTotal) {
+
     //scale factor to adjust symbol size evenly
 
+
+
+
+    var weightedValue = (attValue * 100) / (attTotal);
     var scaleFactor = 1.33;
-    //area based on attribute value and scale factor
-    var area = attValue * scaleFactor;
+
     //radius calculated based on area
     //        var radius = Math.sqrt(area / Math.PI);
 
 
-    var radius = area
+    var radius = weightedValue * scaleFactor
 
-    return radius;
+    console.log(attValue);
+    console.log(attTotal);
+    console.log(radius);
+    console.log(" ");
+
+    return (attTotal == 1 || attTotal == 2) ? 1 : radius;
 };
 
 
@@ -95,9 +111,11 @@ function pointToLayer(feature, latlng, attributes, map, cities) {
 
     //Step 5: For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
+    var attTotal = Number(feature.properties.T_TOTAL);
+
 
     //Step 6: Give each feature's circle marker a radius based on its attribute value
-    geojsonMarkerOptions.radius = calcPropRadius(attValue);
+    geojsonMarkerOptions.radius = calcPropRadius(attValue, attTotal);
 
     //create circle markers
     var layer = L.circleMarker(latlng, geojsonMarkerOptions);
@@ -137,7 +155,7 @@ function updatePropSymbols(map, attribute) {
             var props = layer.feature.properties;
 
             //update each feature's radius based on new attribute values
-            var radius = calcPropRadius(props[attribute]);
+            var radius = calcPropRadius(props[attribute], props.T_TOTAL);
             layer.setRadius(radius);
 
 
@@ -252,10 +270,6 @@ function createSequenceControls(map, attributes) {
     });
 };
 
-//function exploreCity(city) {
-//    console.log(cities[0])
-//}
-
 var exploreCityTracker = null;
 
 function exploreCityRelay(cityName) {
@@ -293,7 +307,8 @@ function processData(data) {
     //push each attribute name into attributes array
     for (var attribute in properties) {
         //only take attributes with population values
-        if (attribute.indexOf("PCT") > -1) {
+        //OptionsL JNC, TAN
+        if (attribute.indexOf("TAN") > -1) {
             attributes.push(attribute);
         };
     };
@@ -310,6 +325,7 @@ function processData(data) {
 
     return attributes_customOrder;
 };
+
 
 function getCityZoomLevels(map, data) {
 
@@ -333,7 +349,6 @@ function getCityZoomLevels(map, data) {
         //        });
     };
 
-    console.log(cities)
     return cities
 };
 
@@ -354,7 +369,7 @@ function handleLayerZoomDisplay(data, map) {
 //function to retrieve the data and place it on the map
 function getData(map) {
     //load the data
-    $.ajax("geojson/JuncoTimeseries_no0.geojson", {
+    $.ajax("geojson/Timeseries_JT4.geojson", {
         dataType: "json",
         success: function (response) {
 
