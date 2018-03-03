@@ -7,20 +7,25 @@ var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/r
     maxZoom: 16
 }).addTo(mymap);
 
-function onEachFeature(feature, layer) {
-    //no property named popupContent; instead, create html string with all properties
-    var popupContent = "";
-    if (feature.properties) {
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+}
 
-        //        //loop to add feature property names and values to html string
-        //        for (var property in feature.properties) {
-        //            popupContent = feature.properties[property] + "</p>";
-        //            break
-        //        }
-        popupContent = "<div>" + feature.properties.NAME + "</div>"
-        layer.bindPopup(popupContent);
-    };
-};
+//function onEachFeature(feature, layer) {
+//
+//    //no property named popupContent; instead, create html string with all properties
+//    var popupContent = "";
+//    if (feature.properties) {
+//
+//        //        //loop to add feature property names and values to html string
+//        //        for (var property in feature.properties) {
+//        //            popupContent = feature.properties[property] + "</p>";
+//        //            break
+//        //        }
+//        popupContent = "<div>" + feature.properties.NAME + "</div>"
+//        layer.bindPopup(popupContent);
+//    };
+//};
 
 //calculate the radius of each proportional symbol
 function calcPropRadius(attValue) {
@@ -40,7 +45,12 @@ function calcPropRadius(attValue) {
 
 
 // Turns markers into the proportional symbols
-function pointToLayer(feature, latlng, attributes) {
+function pointToLayer(feature, latlng, attributes, map, cities) {
+
+    //    var East_southWest = L.latLng(38.429478, -78.870317);
+    //    var East_northEast = L.latLng(38.435428, -78.856346);
+    //    var East_bounds = L.latLngBounds(East_southWest, East_northEast);
+    //    map.fitBounds(East_bounds);
 
     // JAN = 1, FEB = 2 etcetera
     monthSelection = 1
@@ -74,11 +84,12 @@ function pointToLayer(feature, latlng, attributes) {
     //create marker options
     var geojsonMarkerOptions = {
         radius: 0,
-        fillColor: "darkgray",
-        color: "#000",
-        weight: 1.5,
+        fillColor: "#0570b0",
+        color: "#0570b0",
+        weight: 2,
         opacity: 1,
-        fillOpacity: 0.2
+        fillOpacity: 0.05,
+        className: "propSymbols"
     };
 
 
@@ -91,11 +102,14 @@ function pointToLayer(feature, latlng, attributes) {
     //create circle markers
     var layer = L.circleMarker(latlng, geojsonMarkerOptions);
 
+
     //build popup content string
-    var popupContent = "<div>City: " + feature.properties.NAME + "</div>";
+    var currentCity = feature.properties.NAME
+    var popupContent = "<div class='currentCity'>" + currentCity + "</div><div class='explorePopupButton' onclick='exploreCityRelay(" + '"' + currentCity + '"' + ")'>Explore</div><input type='button' value='Click Me' class='testButton'>";
 
     //bind the popup to the circle marker
     layer.bindPopup(popupContent);
+
 
     //return the circle marker to the L.geoJson pointToLayer option
     return layer;
@@ -103,13 +117,13 @@ function pointToLayer(feature, latlng, attributes) {
 
 
 
-function createPropSymbols(data, map, attributes) {
+function createPropSymbols(data, map, attributes, cities) {
 
 
     //create a Leaflet GeoJSON layer and add it to the map
     L.geoJson(data, {
-        pointToLayer: function (feature, latlng) {
-            return pointToLayer(feature, latlng, attributes);
+        pointToLayer: function (feature, latlng, map, cities) {
+            return pointToLayer(feature, latlng, attributes, map, cities);
         }
     }).addTo(map);
 };
@@ -140,6 +154,7 @@ function updatePropSymbols(map, attribute) {
             //            });
         };
     });
+
 };
 
 function createSequenceControls(map, attributes) {
@@ -154,7 +169,7 @@ function createSequenceControls(map, attributes) {
     $('#timeSliderWrapper').append('<button class="skip" id="forward">></button>');
 
     // Month indicator
-    $('#timeSliderWrapper').append('<div class="" id="monthIndicator">JAN</div>');
+    $('#timeSliderWrapper').append('<div class="" id="monthIndicator">AUG</div>');
 
     //set slider attributes
     $('#range-slider').attr({
@@ -179,7 +194,6 @@ function createSequenceControls(map, attributes) {
         for (var i = 0; i < 11; i++) {
             setTimeout(function () {
                 i2++
-                console.log("tick");
 
                 // Update slider
                 $('#range-slider').val(i2);
@@ -194,7 +208,7 @@ function createSequenceControls(map, attributes) {
 
 
 
-            }, (i + 1) * 500);
+            }, (i + 1) * 150);
         }
     });
 
@@ -229,7 +243,6 @@ function createSequenceControls(map, attributes) {
     $('#range-slider').on('input', function () {
         //Step 6: get the new index value
         var index = $(this).val();
-        console.log("range-slider");
 
         // Update symbol sizes
         updatePropSymbols(map, attributes[index]);
@@ -239,9 +252,40 @@ function createSequenceControls(map, attributes) {
     });
 };
 
+//function exploreCity(city) {
+//    console.log(cities[0])
+//}
+
+var exploreCityTracker = null;
+
+function exploreCityRelay(cityName) {
+    exploreCityTracker = cityName
+};
+
+function createExploreCityControls(map, cities) {
+    //    map.fitBounds(cities[16][1])
+
+    $("html").click(function () {
+        if (exploreCityTracker != null) {
+            var city;
+            for (var i = 0, len = cities.length; i < len; i++) {
+                if (cities[i][0] === exploreCityTracker) {
+                    city = cities[i];
+                    break;
+                }
+            };
+            map.fitBounds(city[1])
+
+        };
+        exploreCityTracker = null
+    });
+
+}
+
 function processData(data) {
-    //empty array to hold attributes
+    //empty arrays to hold attributes
     var attributes = [];
+    var attributes_customOrder = [];
 
     //properties of the first feature in the dataset
     var properties = data.features[0].properties;
@@ -254,9 +298,59 @@ function processData(data) {
         };
     };
 
+    // Reorder the months for optimal migration viewing
+    for (var i = 7; i < 12; i++) {
+        attributes_customOrder.push(attributes[i])
+    };
+    for (var i = 0; i < 7; i++) {
+        attributes_customOrder.push(attributes[i])
+    };
 
-    return attributes;
+
+
+    return attributes_customOrder;
 };
+
+function getCityZoomLevels(map, data) {
+
+    cities = [];
+
+    for (i in data.features) {
+
+        var cityName = data.features[i].properties.NAME;
+        var cityX = data.features[i].geometry.coordinates[0];
+        var cityY = data.features[i].geometry.coordinates[1];
+
+        var southWest = L.latLng(cityY - 0.2, cityX - 0.2);
+        var northEast = L.latLng(cityY + 0.2, cityX + 0.2);
+        var bounds = L.latLngBounds(southWest, northEast);
+
+        cities.push([cityName, bounds]);
+
+        //        cities.push({
+        //            key: cityName,
+        //            value: bounds
+        //        });
+    };
+
+    console.log(cities)
+    return cities
+};
+
+function handleLayerZoomDisplay(data, map) {
+
+
+    map.on('zoomend', function () {
+        points = map.layer;
+        if (map.getZoom() < 6) {
+            $(".propSymbols").show()
+        }
+        if (map.getZoom() >= 6) {
+            $(".propSymbols").hide()
+        }
+    })
+};
+
 //function to retrieve the data and place it on the map
 function getData(map) {
     //load the data
@@ -292,17 +386,20 @@ function getData(map) {
             //                }
             //            }).addTo(mymap); 
 
-
             var attributes = processData(response);
-            createPropSymbols(response, mymap, attributes);
+            var cities = getCityZoomLevels(mymap, response);
+            glbl_cities = cities
+            createPropSymbols(response, mymap, attributes, cities);
             createSequenceControls(mymap, attributes);
+            createExploreCityControls(mymap, cities);
+            handleLayerZoomDisplay(response, mymap);
+
+
         }
     });
 };
 
 getData();
-
-
 
 
 
