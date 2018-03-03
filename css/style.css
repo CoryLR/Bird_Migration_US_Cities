@@ -8,6 +8,53 @@ html {
     margin: 0;
 }
 
+#timeSliderWrapper {
+    position: absolute;
+    margin: 0;
+    top: 0px;
+    left: 70px;
+    /*
+    left: 50%;
+    transform: translate(-50%, 0%);
+*/
+    z-index: 500;
+    background-color: rgba(255, 255, 2550, 0.7);
+    padding: 15px;
+    -moz-box-shadow: 0px 0px 2px 2px #ccc;
+    -webkit-box-shadow: 0px 0px 2px 2px #ccc;
+    box-shadow: 0px 0px 2px 2px #ccc;
+    /*    border-radius: 15px;*/
+}
+
+.skip {
+    /*    margin: 0 10px;*/
+}
+
+#range-slider-wrapper {
+    display: inline-block;
+}
+
+#range-slider {
+    width: 200px;
+}
+
+#forward {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#reverse {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+#monthIndicator {
+    display: inline-block;
+    font-size: 22px;
+    font-family: "Veranda", sans-serif;
+    padding: 5px;
+}
+
 #titleArea {
     position: fixed;
     width: 300px;
@@ -21,8 +68,8 @@ html {
 }
 
 #juncoPic {
-    width: 90%;
-    padding: 5%;
+    width: 50%;
+    padding-left: 25%;
 }
 
 #titleText {
@@ -40,6 +87,11 @@ html {
     text-align: center;
     font-size: 42px;
     /*    letter-spacing: 6px;*/
+}
+
+#subtitle {
+    text-align: center;
+    font-size: 16px;
 }
 
 #infoCollapse {
