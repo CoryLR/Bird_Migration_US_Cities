@@ -51,10 +51,6 @@ function calcPropRadius(attValue, attTotal) {
 
     var radius = weightedValue * scaleFactor
 
-    console.log(attValue);
-    console.log(attTotal);
-    console.log(radius);
-    console.log(" ");
 
     return (attTotal == 1 || attTotal == 2) ? 1 : radius;
 };
@@ -73,45 +69,26 @@ function pointToLayer(feature, latlng, attributes, map, cities) {
 
     var attribute = attributes[monthSelection - 1];
 
-    //    var monthTracker = 10;
-    //    var monthIndex = {
-    //        1: "PCT_01_JAN",
-    //        2: "PCT_02_FEB",
-    //        3: "PCT_03_MAR",
-    //        4: "PCT_04_APR",
-    //        5: "PCT_05_MAY",
-    //        6: "PCT_06_JUN",
-    //        7: "PCT_07_JUL",
-    //        8: "PCT_08_AUG",
-    //        9: "PCT_09_SEP",
-    //        10: "PCT_10_OCT",
-    //        11: "PCT_11_NOV",
-    //        12: "PCT_12_DEC"
-    //    };    //
-    //    function iterateMonthTracker() {
-    //        if (monthTracker > 11) {
-    //            monthTracker = 1
-    //        } else {
-    //            monthTracker++
-    //        }
-    //    };
+    var classNameString = "propSymbols " + attributes[12][0]
 
     //    var attribute = monthIndex[monthTracker];
     //create marker options
     var geojsonMarkerOptions = {
         radius: 0,
-        fillColor: "#0570b0",
-        color: "#0570b0",
+        fillColor: attributes[12][1],
+        color: attributes[12][2],
+        //        fillColor: "#0570b0",
+        //        color: "#0570b0",
         weight: 2,
         opacity: 1,
         fillOpacity: 0.05,
-        className: "propSymbols"
+        className: classNameString
     };
 
 
     //Step 5: For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
-    var attTotal = Number(feature.properties.T_TOTAL);
+    var attTotal = Number(feature.properties[attributes[12][0]]);
 
 
     //Step 6: Give each feature's circle marker a radius based on its attribute value
@@ -148,14 +125,25 @@ function createPropSymbols(data, map, attributes, cities) {
 
 function updatePropSymbols(map, attribute) {
     map.eachLayer(function (layer) {
-        //        if (true) {
+        //access feature properties
 
         if (layer.feature && layer.feature.properties[attribute]) {
-            //access feature properties
             var props = layer.feature.properties;
+            if (layer.defaultOptions.className.indexOf("J_TOTAL") > -1) {
+                var currentTotal = "J_TOTAL";
+                var month = attribute
+            } else {
+                var currentTotal = "T_TOTAL"
+                var month = "TAN" + attribute.substr(3)
+            };
+
+            console.log(props[month]);
+            console.log(month);
+
+            //    var attTotal = Number(feature.properties[attributes[12][0]]);
 
             //update each feature's radius based on new attribute values
-            var radius = calcPropRadius(props[attribute], props.T_TOTAL);
+            var radius = calcPropRadius(props[month], props[currentTotal]);
             layer.setRadius(radius);
 
 
@@ -187,7 +175,7 @@ function createSequenceControls(map, attributes) {
     $('#timeSliderWrapper').append('<button class="skip" id="forward">></button>');
 
     // Month indicator
-    $('#timeSliderWrapper').append('<div class="" id="monthIndicator">AUG</div>');
+    $('#timeSliderWrapper').append('<div class="" id="monthIndicator">OCT</div>');
 
     //set slider attributes
     $('#range-slider').attr({
@@ -200,6 +188,8 @@ function createSequenceControls(map, attributes) {
 
 
     $('#play').click(function () {
+        var playSpeed = 360
+
         // Update slider
         $('#range-slider').val(0);
 
@@ -226,8 +216,13 @@ function createSequenceControls(map, attributes) {
 
 
 
-            }, (i + 1) * 150);
-        }
+            }, (i + 1) * playSpeed);
+        };
+        setTimeout(function () {
+            $('#range-slider').val(0);
+            updatePropSymbols(map, attributes[0]);
+            $('#monthIndicator').html("<span>" + attributes[0].substr(7) + "</span>");
+        }, playSpeed * 12)
     });
 
 
@@ -295,8 +290,9 @@ function createExploreCityControls(map, cities) {
     });
 
 }
-
-function processData(data) {
+//        fillColor: "#0570b0",
+//        color: "#0570b0",
+function processData(data, species) {
     //empty arrays to hold attributes
     var attributes = [];
     var attributes_customOrder = [];
@@ -308,21 +304,26 @@ function processData(data) {
     for (var attribute in properties) {
         //only take attributes with population values
         //OptionsL JNC, TAN
-        if (attribute.indexOf("TAN") > -1) {
+        if (attribute.indexOf(species) > -1) {
             attributes.push(attribute);
         };
     };
 
     // Reorder the months for optimal migration viewing
-    for (var i = 7; i < 12; i++) {
+    for (var i = 9; i < 12; i++) {
         attributes_customOrder.push(attributes[i])
     };
-    for (var i = 0; i < 7; i++) {
+    for (var i = 0; i < 9; i++) {
         attributes_customOrder.push(attributes[i])
     };
 
+    if (species == "JNC") {
+        attributes_customOrder.push(["J_TOTAL", "#0570b0", "#0570b0"])
+    } else {
+        attributes_customOrder.push(["T_TOTAL", "red", "red"])
+    };
 
-
+    console.log(attributes_customOrder);
     return attributes_customOrder;
 };
 
@@ -401,11 +402,13 @@ function getData(map) {
             //                }
             //            }).addTo(mymap); 
 
-            var attributes = processData(response);
+            var juncoAttributes = processData(response, "JNC");
+            var tanagerAttributes = processData(response, "TAN");
             var cities = getCityZoomLevels(mymap, response);
             glbl_cities = cities
-            createPropSymbols(response, mymap, attributes, cities);
-            createSequenceControls(mymap, attributes);
+            createPropSymbols(response, mymap, juncoAttributes, cities);
+            createPropSymbols(response, mymap, tanagerAttributes, cities);
+            createSequenceControls(mymap, juncoAttributes);
             createExploreCityControls(mymap, cities);
             handleLayerZoomDisplay(response, mymap);
 
