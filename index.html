@@ -20,37 +20,56 @@
     <!-- Main JS -->
     <script src="js/script.js"></script>
 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
 </head>
 
 <body>
 
-    <div id="titleArea">
-        <div id="titleText">
-            <div id="title1">WHERE DID YOU GO</div>
-            <div id="title2">JUNCO</div>
-        </div>
-        <img src="img/Sibley_Dark-eyed-Junco.jpg" id="juncoPic">
-        <div id="infoCollapse">
-            <div id="infoTitleBreak"></div>
-            <div id="infoText">
-                <div id="subtitle">Winter migration patterns<br>for the Dark-eyed Junco</div>
-                <br>
-                <br>
-                <br>
-                <br> Info Text
-            </div>
+    <div id="titleBreak">VS</div>
+    <div id="titleJunco">
+        <div id="titleTextJunco">
+            <span id="title2Junco">JUNCO</span>
         </div>
     </div>
+    <img src="img/Sibley_Dark-eyed-Junco3.png" id="titlePicJunco">
+    <div id="titleTanager">
+        <div id="titleTextTanager">
+            <span id="title2Tanager">TANAGER</span>
+        </div>
+    </div>
+    <img src="img/Sibley_Scarlet-Tanager3.png" id="titlePicTanager">
 
+    <div id="subTitle">MIGRATION PATTERNS</div>
     <div id="timeSliderWrapper"></div>
+
+    <div id="zoomFullButton" title="Reset zoom"><span class="glyphicon glyphicon-globe"></span></div>
 
     <div id="mapWrapper">
         <div id="map"></div>
         <!-- Leaflet map -->
     </div>
 
-    <!-- Main Leaflet JS (Must be after #map in DOM -->
+    <div id="birdLegend">
+        <div id="legendTitle">BIRD SIGHTINGS (% of annual)<br><span id="">Dark-eyed Junco</span> or <span>Summer Tanager</span><span id="legendMonthIndicator"></span></div>
+        <div id="symbolsContainer">
+            <div class="legendCircle1"></div>
+            <div class="legendCircle2"></div>
+            <div class="legendCircle3"></div>
+        </div>
+        <div id="legendValuesWrapper">
+            <div id="legendVal1">. . . . . . . . . . . . . . . . . . . 50% +</div>
+            <div id="legendVal2">. . . . . . . . . . . . . . . . . . . . . 25%</div>
+            <div id="legendVal3">. . . . . . . . . . . . 0% / Low Data</div>
+        </div>
+    </div>
+
+    <!-- Main Leaflet JS (Must be after #map in DOM) -->
     <script src="js/leaflet.js"></script>
+
+    <!-- Bootstrap JS-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 
 </html>

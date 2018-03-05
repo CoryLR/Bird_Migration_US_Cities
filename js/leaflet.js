@@ -1,11 +1,18 @@
-// Initialize Leaflet map
+// Bounds function required for leaflet initialization
+function leafletBounds(N, S, E, W) {
+    var southWest = L.latLng(S, W);
+    var northEast = L.latLng(N, E);
+    return L.latLngBounds(southWest, northEast);
+};
 
+// Initialize Leaflet map
 var mymap = L.map('map', {
     minZoom: 4,
-    maxZoom: 13
+    maxZoom: 14,
+    maxBounds: leafletBounds(60, 0, -30, -160),
+    //    maxBoundsViscosity: 0.5
+
 });
-
-
 mymap.setView([41, -96], 5);
 
 // Basemap
@@ -42,15 +49,14 @@ function calcPropRadius(attValue, attTotal) {
 
 
 
-    var weightedValue = (attValue * 100) / (attTotal);
+    var monthPercent = (attValue / attTotal) * 100;
     var scaleFactor = 1.33;
 
     //radius calculated based on area
     //        var radius = Math.sqrt(area / Math.PI);
 
 
-    var radius = weightedValue * scaleFactor
-
+    var radius = (monthPercent > 50 ? 50 : monthPercent) * scaleFactor
 
     return (attTotal == 1 || attTotal == 2) ? 1 : radius;
 };
@@ -100,7 +106,7 @@ function pointToLayer(feature, latlng, attributes, map, cities) {
 
     //build popup content string
     var currentCity = feature.properties.NAME
-    var popupContent = "<div class='currentCity'>" + currentCity + "</div><div class='explorePopupButton' onclick='exploreCityRelay(" + '"' + currentCity + '"' + ")'>Explore</div><input type='button' value='Click Me' class='testButton'>";
+    var popupContent = "<div class='currentCity'>" + currentCity + "</div><button class='explorePopupButton btn' onclick='exploreCityRelay(" + '"' + currentCity + '"' + ")'>Explore</button>";
 
     //bind the popup to the circle marker
     layer.bindPopup(popupContent);
@@ -137,9 +143,6 @@ function updatePropSymbols(map, attribute) {
                 var month = "TAN" + attribute.substr(3)
             };
 
-            console.log(props[month]);
-            console.log(month);
-
             //    var attTotal = Number(feature.properties[attributes[12][0]]);
 
             //update each feature's radius based on new attribute values
@@ -164,15 +167,15 @@ function updatePropSymbols(map, attribute) {
 };
 
 function createSequenceControls(map, attributes) {
-    $('#timeSliderWrapper').append('<button class="" id="play">PLAY</button>');
+    $('#timeSliderWrapper').append('<button class="btn glyphicon glyphicon-play" id="play"></button>');
 
-    $('#timeSliderWrapper').append('<button class="skip" id="reverse"><</button>');
+    $('#timeSliderWrapper').append('<button class="skip btn glyphicon glyphicon-step-backward" id="reverse"></button>');
 
     //create range input element
     $('#timeSliderWrapper').append('<div id="range-slider-wrapper"><input id="range-slider" type="range"></div>');
 
     // range slider buttons
-    $('#timeSliderWrapper').append('<button class="skip" id="forward">></button>');
+    $('#timeSliderWrapper').append('<button class="skip btn glyphicon glyphicon-step-forward" id="forward"></button>');
 
     // Month indicator
     $('#timeSliderWrapper').append('<div class="" id="monthIndicator">OCT</div>');
@@ -285,6 +288,7 @@ function createExploreCityControls(map, cities) {
             };
             map.fitBounds(city[1])
 
+
         };
         exploreCityTracker = null
     });
@@ -320,10 +324,11 @@ function processData(data, species) {
     if (species == "JNC") {
         attributes_customOrder.push(["J_TOTAL", "#0570b0", "#0570b0"])
     } else {
+        //        attributes_customOrder.push(["T_TOTAL", "#de2d26", "#de2d26"])
+
         attributes_customOrder.push(["T_TOTAL", "red", "red"])
     };
 
-    console.log(attributes_customOrder);
     return attributes_customOrder;
 };
 
@@ -353,54 +358,35 @@ function getCityZoomLevels(map, data) {
     return cities
 };
 
-function handleLayerZoomDisplay(data, map) {
-
+function handleLayerZoomDisplay(map) {
 
     map.on('zoomend', function () {
         points = map.layer;
-        if (map.getZoom() < 6) {
-            $(".propSymbols").show()
+        if (map.getZoom() < 9) {
+            $(".propSymbols").show();
+            $(".hotspots").hide();
+            $("#timeSliderWrapper").show();
+            $("#birdLegend").show();
         }
-        if (map.getZoom() >= 6) {
-            $(".propSymbols").hide()
+        if (map.getZoom() >= 9) {
+            $(".propSymbols").hide();
+            $(".hotspots").show();
+            $("#timeSliderWrapper").hide();
+            $("#birdLegend").hide();
         }
+    });
+
+    $('#zoomFullButton').click(function () {
+        map.setView([41, -96], 5)
     })
 };
 
 //function to retrieve the data and place it on the map
-function getData(map) {
+function getBirdData(map) {
     //load the data
     $.ajax("geojson/Timeseries_JT4.geojson", {
         dataType: "json",
         success: function (response) {
-
-
-            //create a Leaflet GeoJSON layer and add it to the map
-            //            L.geoJson(response, {
-            //                onEachFeature: onEachFeature
-            //            }).addTo(mymap);
-
-
-            //REFERENCE CIRCLES
-
-            //            var circleExtentMarkerOptions = {
-            //                radius: 40,
-            //                color: "rgb(180,180,180)",
-            //                weight: 1,
-            //                opacity: 1,
-            //                fillOpacity: 0
-            //            };
-            //            L.geoJson(response, {
-            //                pointToLayer: function (feature, latlng) {
-            //                    var circleExtentMarkers = L.circleMarker(latlng, circleExtentMarkerOptions);
-            //                    //build popup content string
-            //                    var popupContent = "<div>City: " + feature.properties.NAME + "</div>";
-            //
-            //                    //bind the popup to the circle marker
-            //                    circleExtentMarkers.bindPopup(popupContent);
-            //                    return circleExtentMarkers
-            //                }
-            //            }).addTo(mymap); 
 
             var juncoAttributes = processData(response, "JNC");
             var tanagerAttributes = processData(response, "TAN");
@@ -410,16 +396,80 @@ function getData(map) {
             createPropSymbols(response, mymap, tanagerAttributes, cities);
             createSequenceControls(mymap, juncoAttributes);
             createExploreCityControls(mymap, cities);
-            handleLayerZoomDisplay(response, mymap);
-
 
         }
     });
 };
 
-getData();
+function customZoomOptions(map) {
+    handleLayerZoomDisplay(mymap);
+};
+
+function getHotspotData(map) {
+    //load the data
+    //    function getColor(d) {
+    //        return d > 2 ? '#800026' :
+    //            d > 1 ? '#FC4E2A' :
+    //            '#FFEDA0';
+    //    };
+    //
+    //    function hotspotStyle(feature) {
+    //        return {
+    //            fillColor: getColor(feature.properties.Popularity),
+    //            weight: 2,
+    //            opacity: 1,
+    //            color: 'white',
+    //            dashArray: '3',
+    //            fillOpacity: 0.7
+    //        };
+    //    };
+    //    L.geoJson("geojson/UrbanHotspots_top500plus.geojson", {
+    //        style: hotspotStyle
+    //    }).addTo(map);
+    $.ajax("geojson/UrbanHotspots_top500plus.geojson", {
+        dataType: "json",
+        success: function (response) {
+
+            function getColor(d) {
+                return d > 2 ? '#756bb1' :
+                    d > 1 ? '#bcbddc' :
+                    '#efedf5';
+            };
+
+            function hotSpotStyle(feature) {
+                return {
+                    radius: 12,
+                    fillColor: getColor(feature.properties.Popularity),
+                    color: "black",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 1,
+                    className: "hotspots"
+                };
+            };
+            L.geoJson(response, {
+                pointToLayer: function (feature, latlng) {
+                    var circleMarkers = L.circleMarker(latlng, hotSpotStyle(feature));
+                    //build popup content string
+                    var popupContent = "<div>" + feature.properties.HOTSPOT + "<br>City: " + feature.properties.CITY + "</div>";
+
+                    //bind the popup to the circle marker
+                    circleMarkers.bindPopup(popupContent);
+                    return circleMarkers
+                }
+            }).addTo(mymap);
+            $(".hotspots").hide();
+
+        }
+    });
 
 
+};
+
+
+getHotspotData(mymap);
+getBirdData(mymap);
+customZoomOptions(mymap);
 
 
 
