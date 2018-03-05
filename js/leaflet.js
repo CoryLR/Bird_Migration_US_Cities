@@ -13,7 +13,7 @@ var mymap = L.map('map', {
     //    maxBoundsViscosity: 0.5
 
 });
-mymap.setView([41, -96], 5);
+mymap.setView([40, -96], 5);
 
 // Basemap
 var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
@@ -21,9 +21,6 @@ var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/r
     maxZoom: 16
 }).addTo(mymap);
 
-function zoomToFeature(e) {
-    map.fitBounds(e.target.getBounds());
-}
 
 //function onEachFeature(feature, layer) {
 //
@@ -61,19 +58,32 @@ function calcPropRadius(attValue, attTotal) {
     return (attTotal == 1 || attTotal == 2) ? 1 : radius;
 };
 
+function calcPropValue(attValue, attTotal) {
+
+    //scale factor to adjust symbol size evenly
+
+    var monthPercent = (attValue / attTotal) * 100;
+
+    var value = monthPercent
+
+    if (attTotal == 1 || attTotal == 2 || value < 1) {
+        returnValue = "0% / Low Data"
+    } else {
+        returnValue = value.toFixed(1) + "%"
+    };
+
+    return returnValue
+};
+
 
 // Turns markers into the proportional symbols
 function pointToLayer(feature, latlng, attributes, map, cities) {
 
-    //    var East_southWest = L.latLng(38.429478, -78.870317);
-    //    var East_northEast = L.latLng(38.435428, -78.856346);
-    //    var East_bounds = L.latLngBounds(East_southWest, East_northEast);
-    //    map.fitBounds(East_bounds);
 
-    // JAN = 1, FEB = 2 etcetera
-    monthSelection = 1
+    // starting position on timeslider, options 1-12
+    timeSliderStartingPosition = 1
 
-    var attribute = attributes[monthSelection - 1];
+    var attribute = attributes[timeSliderStartingPosition - 1];
 
     var classNameString = "propSymbols " + attributes[12][0]
 
@@ -103,10 +113,14 @@ function pointToLayer(feature, latlng, attributes, map, cities) {
     //create circle markers
     var layer = L.circleMarker(latlng, geojsonMarkerOptions);
 
-
     //build popup content string
-    var currentCity = feature.properties.NAME
-    var popupContent = "<div class='currentCity'>" + currentCity + "</div><button class='explorePopupButton btn' onclick='exploreCityRelay(" + '"' + currentCity + '"' + ")'>Explore</button>";
+    var currentCity = feature.properties.NAME;
+    juncoMonthString = "JNC" + attributes[0].substr(3);
+    tanagerMonthString = "TAN" + attributes[0].substr(3);
+    juncoMonthVal = calcPropValue(feature.properties[juncoMonthString], feature.properties.J_TOTAL)
+    tanagerMonthVal = calcPropValue(feature.properties[tanagerMonthString], feature.properties.T_TOTAL)
+
+    var popupContent = "<div class='currentCity'><strong>" + currentCity + "</strong> (" + attributes[0].substr(7) + ")</div>Juncos: " + juncoMonthVal + "<br>Tanagers: " + tanagerMonthVal + "<br><div id='explorePopupButtonWrapper'><button class='explorePopupButton btn' onclick='exploreCityRelay(" + '"' + currentCity + '"' + ")'>Explore City</button></div>";
 
     //bind the popup to the circle marker
     layer.bindPopup(popupContent);
@@ -149,6 +163,19 @@ function updatePropSymbols(map, attribute) {
             var radius = calcPropRadius(props[month], props[currentTotal]);
             layer.setRadius(radius);
 
+            //build popup content string
+            var currentCity = layer.feature.properties.NAME;
+            juncoMonthString = attribute;
+            tanagerMonthString = "TAN" + attribute.substr(3);
+            juncoMonthVal = calcPropValue(layer.feature.properties[juncoMonthString], layer.feature.properties.J_TOTAL)
+            tanagerMonthVal = calcPropValue(layer.feature.properties[tanagerMonthString], layer.feature.properties.T_TOTAL)
+
+            var popupContent = "<div class='currentCity'><strong>" + currentCity + "</strong> (" + attribute.substr(7) + ")</div>Juncos: " + juncoMonthVal + "<br>Tanagers: " + tanagerMonthVal + "<br><div id='explorePopupButtonWrapper'><button class='explorePopupButton btn' onclick='exploreCityRelay(" + '"' + currentCity + '"' + ")'>Explore City</button></div>";
+
+            //bind the popup to the circle marker
+            layer.bindPopup(popupContent);
+
+
 
             //            //add city to popup content string
             //            var popupContent = "<p><b>City:</b> " + props.City + "</p>";
@@ -168,6 +195,7 @@ function updatePropSymbols(map, attribute) {
 
 function createSequenceControls(map, attributes) {
     $('#timeSliderWrapper').append('<button class="btn glyphicon glyphicon-play" id="play"></button>');
+    $('#timeSliderWrapper').append('<button class="btn glyphicon glyphicon-stop" id="stop"></button>');
 
     $('#timeSliderWrapper').append('<button class="skip btn glyphicon glyphicon-step-backward" id="reverse"></button>');
 
@@ -188,10 +216,13 @@ function createSequenceControls(map, attributes) {
         step: 1
     });
 
-
+    var currentPlay = [];
 
     $('#play').click(function () {
-        var playSpeed = 360
+
+        // 10 minute loop
+        var playLoops = 100;
+        var playSpeed = 500;
 
         // Update slider
         $('#range-slider').val(0);
@@ -201,10 +232,16 @@ function createSequenceControls(map, attributes) {
 
         // Update month indicator
         $('#monthIndicator').html("<span>" + attributes[0].substr(7) + "</span>");
+
+
         var i2 = 0
-        for (var i = 0; i < 11; i++) {
-            setTimeout(function () {
+        var iterations = playLoops * 12
+        for (var i = 0; i < iterations; i++) {
+            currentPlay[i] = setTimeout(function () {
                 i2++
+                if (i2 > 11) {
+                    i2 = 0
+                };
 
                 // Update slider
                 $('#range-slider').val(i2);
@@ -219,15 +256,35 @@ function createSequenceControls(map, attributes) {
 
 
 
+
             }, (i + 1) * playSpeed);
         };
-        setTimeout(function () {
+        currentPlay[iterations] = setTimeout(function () {
             $('#range-slider').val(0);
             updatePropSymbols(map, attributes[0]);
             $('#monthIndicator').html("<span>" + attributes[0].substr(7) + "</span>");
-        }, playSpeed * 12)
+            $('#stop').hide();
+            $('#play').show();
+        }, playSpeed * iterations)
+
+        $('#play').hide();
+        $('#stop').show();
+        console.log(currentPlay);
     });
 
+    $('#stop').click(function () {
+
+        //        clearTimeout(currentPlay);
+        for (val in currentPlay) {
+            try {
+                clearTimeout(currentPlay[val])
+            } catch (err) {}
+
+        };
+        $('#stop').hide();
+        $('#play').show();
+
+    });
 
     //Step 5: click listener for buttons
     $('.skip').click(function () {
@@ -286,11 +343,37 @@ function createExploreCityControls(map, cities) {
                     break;
                 }
             };
-            map.fitBounds(city[1])
+            $(".propSymbols").hide();
+            map.flyToBounds(city[1], {
+                    duration: 0.6,
+                })
+                //            map.fitBounds(city[1])
 
 
         };
         exploreCityTracker = null
+    });
+
+
+    for (i in cities) {
+        $("#cityList").append('<li class="dropdown-item" cityIndex="' + i + '">' + cities[i][0] + '</li>')
+    };
+
+    $("#cityList li").click(function () {
+
+        if (true) {
+
+            var city = $(this).attr("cityIndex");
+
+
+            $(".propSymbols").hide();
+            map.flyToBounds(cities[city][1], {
+                    duration: 0.6,
+                })
+                //            map.fitBounds(city[1])
+
+
+        };
     });
 
 }
@@ -340,14 +423,14 @@ function getCityZoomLevels(map, data) {
     for (i in data.features) {
 
         var cityName = data.features[i].properties.NAME;
+
         var cityX = data.features[i].geometry.coordinates[0];
         var cityY = data.features[i].geometry.coordinates[1];
-
         var southWest = L.latLng(cityY - 0.2, cityX - 0.2);
         var northEast = L.latLng(cityY + 0.2, cityX + 0.2);
-        var bounds = L.latLngBounds(southWest, northEast);
+        var cityBounds = L.latLngBounds(southWest, northEast);
 
-        cities.push([cityName, bounds]);
+        cities.push([cityName, cityBounds]);
 
         //        cities.push({
         //            key: cityName,
@@ -367,17 +450,26 @@ function handleLayerZoomDisplay(map) {
             $(".hotspots").hide();
             $("#timeSliderWrapper").show();
             $("#birdLegend").show();
+            $("#hotspotLegend").hide();
+            //            $("#hotspotTitle").hide();
+            $(".leaflet-popup-content-wrapper").css("width", "180px");
         }
         if (map.getZoom() >= 9) {
             $(".propSymbols").hide();
             $(".hotspots").show();
             $("#timeSliderWrapper").hide();
             $("#birdLegend").hide();
+            $("#hotspotLegend").show();
+            //            $("#hotspotTitle").show();
+            $(".leaflet-popup-content-wrapper").css("width", "auto");
         }
     });
 
     $('#zoomFullButton').click(function () {
-        map.setView([41, -96], 5)
+        //        map.setView([41, -96], 5)
+        map.flyTo([40, -96], 5, {
+            duration: 0.6,
+        })
     })
 };
 
@@ -426,7 +518,7 @@ function getHotspotData(map) {
     //    L.geoJson("geojson/UrbanHotspots_top500plus.geojson", {
     //        style: hotspotStyle
     //    }).addTo(map);
-    $.ajax("geojson/UrbanHotspots_top500plus.geojson", {
+    $.ajax("geojson/UrbanHotspots_top364.geojson", {
         dataType: "json",
         success: function (response) {
 
@@ -451,7 +543,7 @@ function getHotspotData(map) {
                 pointToLayer: function (feature, latlng) {
                     var circleMarkers = L.circleMarker(latlng, hotSpotStyle(feature));
                     //build popup content string
-                    var popupContent = "<div>" + feature.properties.HOTSPOT + "<br>City: " + feature.properties.CITY + "</div>";
+                    var popupContent = "<div>" + feature.properties.HOTSPOT + "<br><strong>" + feature.properties.CITY + "</strong><br><a href='https://ebird.org/hotspots?hs=" + feature.properties.LOCALITY_I + "' target='_blank'>View on eBird</a></div>";
 
                     //bind the popup to the circle marker
                     circleMarkers.bindPopup(popupContent);
@@ -462,6 +554,8 @@ function getHotspotData(map) {
 
         }
     });
+
+
 
 
 };

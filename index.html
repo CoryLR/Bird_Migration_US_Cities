@@ -41,10 +41,24 @@
     </div>
     <img src="img/Sibley_Scarlet-Tanager3.png" id="titlePicTanager">
 
-    <div id="subTitle">MIGRATION PATTERNS</div>
+    <div id="subTitle">JOURNEY THROUGH URBAN AMERICA</div>
+
+    <div id="hotspotTitle">LOCAL BIRD HOTSPOTS</div>
+
+
     <div id="timeSliderWrapper"></div>
 
     <div id="zoomFullButton" title="Reset zoom"><span class="glyphicon glyphicon-globe"></span></div>
+
+    <div class="dropdown dropup" id="exploreCityWrapper">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Explore a City
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="">
+            <ul id="cityList">
+            </ul>
+        </div>
+    </div>
 
     <div id="mapWrapper">
         <div id="map"></div>
@@ -52,7 +66,7 @@
     </div>
 
     <div id="birdLegend">
-        <div id="legendTitle">BIRD SIGHTINGS (% of annual)<br><span id="">Dark-eyed Junco</span> or <span>Summer Tanager</span><span id="legendMonthIndicator"></span></div>
+        <div id="legendTitle">BIRD SIGHTINGS (% of annual)<br><span id="legendJuncoColor">Dark-eyed Junco</span> or <span id="legendTanagerColor">Summer Tanager</span><span id="legendMonthIndicator"></span></div>
         <div id="symbolsContainer">
             <div class="legendCircle1"></div>
             <div class="legendCircle2"></div>
@@ -62,6 +76,19 @@
             <div id="legendVal1">. . . . . . . . . . . . . . . . . . . 50% +</div>
             <div id="legendVal2">. . . . . . . . . . . . . . . . . . . . . 25%</div>
             <div id="legendVal3">. . . . . . . . . . . . 0% / Low Data</div>
+        </div>
+    </div>
+    <div id="hotspotLegend">
+        <div id="hotspot_legendTitle">LOCAL BIRD HOTSPOTS<br>High Junco or Tanager Counts<span id="hotspot_legendMonthIndicator"></span></div>
+        <div id="hotspot_symbolsContainer">
+            <div class="hotspot_legendCircle1"></div>
+            <div class="hotspot_legendCircle2"></div>
+            <div class="hotspot_legendCircle3"></div>
+        </div>
+        <div id="hotspot_legendValuesWrapper">
+            <div id="legendVal1">. . . . . . . . . Most Popular</div>
+            <div id="legendVal2">. . . . . . . . . More Popular</div>
+            <div id="legendVal3">. . . . . . . . . . . . . . Popular</div>
         </div>
     </div>
 
