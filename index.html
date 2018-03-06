@@ -98,6 +98,29 @@
 
     <!-- Bootstrap JS-->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <div id="aboutMapTop">
+        <a class="glyphicon glyphicon-info-sign"></a>
+    </div>
+    <div id="aboutMapUnderlay"></div>
+    <div id="aboutMapOverlay">
+        <div id="aboutMapOverlayX"><span class="glyphicon glyphicon-remove"></span></div>
+        <p><strong>About Map <span class="glyphicon glyphicon-info-sign"></span></strong></p>
+        <p><strong>JUNCO vs TANAGER:</strong> Journey Through Urban America</p>
+        <p>Watch how two bird species, the Dark-eyed Junco and the Summer Tanager, migrate throughout the United States as seen by 29 of its cities. The birds aren't the only ones who get to journey throughout America though; explore the map city-by-city to see America's most popular urban bird hotspots!</p>
+        <p><strong>Cartographer:</strong> Cory Leigh Rahman</p>
+        <br>
+        <p><strong>Symbology</strong></p>
+        <p>Each circle on the map represents a US city. The color of the circle refers to one of two bird species; blue for the Dark-eyed Junco (a winter migrant) and red for the Summer Tanager (a summer migrant). The size of the circle represents the proportion of birds seen in one month compared to the whole year; e.g. if you see 50%, that means 50% of all bird sightings in the year were seen in just that one month.</p>
+        <p>Once zoomed in to a city, each purple circle represents a popular birding hotspot; the darker the purple, the more popular the hotspot. These urban hotspots are often pockets of nature and greenery in the otherwise impervious, concrete-filled cities.</p>
+        <br>
+        <p><strong>Methodology</strong></p>
+        <p>All bird and hotspot data are from the Cornell Lab of Ornithology's eBird. This is a citizen science platform where birders worldwide can submit bird survey checklists. Data was downloaded in 10 batches: 5 years (2012-2016) for each of two bird species, the Dark-eyed Junco and Summer Tanager. The data came in hundreds of thousands of data points, one for each species in each survey submitted to eBird. These points were merged together, filtered to chosen US cities, then aggregated and reorganized into species counts per month for each of the chosen cities. A total for each month in each city was also kept in order to calculate the percentages used in the map symbology.</p>
+        <br>
+        <p><strong>Technology</strong></p>
+        <p>This map was built using the Leaflet JavaScript Library, jQuery and some Bootstrap. The data were processed using both ESRI ArcGIS and QGIS.</p>
+
+    </div>
 </body>
 
 </html>

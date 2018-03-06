@@ -38,7 +38,7 @@ function main() {
 
     // Add basemap to map
     var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Data: <a href="https://ebird.org/">eBird</a> (2012-2016) |  Illustrations &copy; <a href="http://www.sibleyguides.com/">David Allen Sibley</a> | Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        attribution: 'Data: <a href="https://ebird.org/">eBird</a> (2012-2016) |  Illustrations &copy; <a href="http://www.sibleyguides.com/">David Allen Sibley</a> | Tiles &copy; Esri | <a id="aboutMap">About Map <span class="glyphicon glyphicon-info-sign"></span></a>',
         maxZoom: 16
     }).addTo(mymap);
 
@@ -53,6 +53,9 @@ function main() {
 
     // Displays the appropriate layer according to zoom level
     handleLayerZoomDisplay(mymap)
+
+    // Makes the buttons work which open and close the About Map splash page
+    createAboutMapListeners()
 };
 
 function getHotspotData(map) {
@@ -526,6 +529,29 @@ function handleLayerZoomDisplay(map) {
     })
 };
 
+function createAboutMapListeners() {
+
+    //#aboutMapUnderlay {
+    //
+    //#aboutMapOverlay {
+    //
+    //#aboutMapOverlayX {
+    $(document).ready(function () {
+        $("#aboutMap, #aboutMapTop").click(function () {
+            $("#aboutMapUnderlay, #aboutMapOverlay").show()
+        });
+
+        $("#aboutMapUnderlay, #aboutMapOverlayX").click(function () {
+            $("#aboutMapUnderlay, #aboutMapOverlay").hide();
+        });
+    });
+
+
+    //    $("html").click(function () {
+    //        alert("TEST")
+    //    });
+
+};
 
 // Initialize all JavaScript #flowControl
 main();
