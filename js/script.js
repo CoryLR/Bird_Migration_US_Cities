@@ -51,7 +51,7 @@ function main() {
     getBirdData(mymap);
 
     // Displays the appropriate layer according to zoom level
-    handleLayerZoomDisplay(mymap)
+    handleLayerZoomDisplay(mymap, defaultZoom)
 
     // Makes the buttons work which open and close the About Map splash page
     createAboutMapListeners()
@@ -499,7 +499,7 @@ function createExploreCityControls(map, cities) {
 };
 
 // Shows & hides layers & UI depending on current zoom level
-function handleLayerZoomDisplay(map) {
+function handleLayerZoomDisplay(map, defaultZoom) {
 
     map.on('zoomend', function () {
         points = map.layer;
@@ -521,7 +521,6 @@ function handleLayerZoomDisplay(map) {
 
     // Listener for the zoom to full button
     $('#zoomFullButton').click(function () {
-        //        map.setView([41, -96], 5)
         map.flyTo([40, -97], defaultZoom, {
             duration: 0.6,
         })
