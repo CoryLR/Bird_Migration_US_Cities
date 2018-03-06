@@ -325,18 +325,8 @@ function createSequenceControls(map, attributes) {
         var playLoops = 100;
         var playSpeed = 500;
 
-        // Update slider
-        $('#range-slider').val(0);
-
-        // Update symbol sizes
-        updatePropSymbols(map, attributes[0]);
-
-        // Update month indicator
-        $('#monthIndicator').html("<span>" + attributes[0].substr(7) + "</span>");
-        $('#legendMonth').html(attributes[0].substr(7));
-
         // Auto-step functionality
-        var i2 = 0
+        var i2 = $('#range-slider').val()
         var iterations = playLoops * 12
         for (var i = 0; i < iterations; i++) {
             currentPlay[i] = setTimeout(function () {
@@ -358,22 +348,12 @@ function createSequenceControls(map, attributes) {
             }, (i + 1) * playSpeed);
         };
 
-        // The "last" iteration resets to first timeslider step
-        currentPlay[iterations] = setTimeout(function () {
-            $('#range-slider').val(0);
-            updatePropSymbols(map, attributes[0]);
-            $('#monthIndicator').html("<span>" + attributes[0].substr(7) + "</span>");
-            $('#legendMonth').html(attributes[0].substr(7));
-
-            $('#stop').hide();
-            $('#play').show();
-        }, playSpeed * iterations)
         $('#play').hide();
         $('#stop').show();
     });
 
     // Creates stop functionality, "stop" listener
-    $('#stop').click(function () {
+    $('#stop, .skip').click(function () {
         for (val in currentPlay) {
             try {
                 clearTimeout(currentPlay[val])
@@ -381,7 +361,6 @@ function createSequenceControls(map, attributes) {
         };
         $('#stop').hide();
         $('#play').show();
-
     });
 
     // Skip functionality, skip click listener
