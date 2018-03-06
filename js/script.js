@@ -8,9 +8,9 @@ function main() {
 
     // Detect window width for optimum default zoom level on start & resize
     if ($(window).width() > 1200) {
-        defaultZoom = 5
+        var defaultZoom = 5;
     } else {
-        defaultZoom = 4
+        var defaultZoom = 4;
     };
     $(window).resize(function () {
         if ($(window).width() > 1200) {
@@ -32,7 +32,6 @@ function main() {
         minZoom: 4,
         maxZoom: 14,
         maxBounds: leafletBounds(60, 0, -30, -160),
-        //    maxBoundsViscosity: 0.5
     });
     mymap.setView([40, -97], defaultZoom);
 
@@ -118,7 +117,7 @@ function getBirdData(map) {
 
             // Workaround for Leaflet's "prevent propagation" limitation in popups
             // Used to assist the "Explore City" button in the city popups
-            glbl_cities = cities
+            glbl_cities = cities;
 
             // Creates proportional symbols for both juncos and tanagers
             createPropSymbols(response, map, juncoAttributes, cities);
@@ -256,7 +255,7 @@ function pointToLayer(feature, latlng, attributes, map, cities) {
 
     //return the circle marker to the L.geoJson pointToLayer option
     return layer;
-}
+};
 
 
 // Calculate the radius of each proportional symbol
@@ -299,15 +298,15 @@ function createSequenceControls(map, attributes) {
     // Create DOM elements
 
     // Play and step buttons
-    $('#timeSliderWrapper').append('<button class="btn glyphicon glyphicon-play" id="play"></button>');
-    $('#timeSliderWrapper').append('<button class="btn glyphicon glyphicon-stop" id="stop"></button>');
-    $('#timeSliderWrapper').append('<button class="skip btn glyphicon glyphicon-step-backward" id="reverse"></button>');
+    $('#timeSliderWrapper').append('<button class="btn glyphicon glyphicon-play" id="play" title="Play"></button>');
+    $('#timeSliderWrapper').append('<button class="btn glyphicon glyphicon-stop" id="stop" title="Stop"></button>');
+    $('#timeSliderWrapper').append('<button class="skip btn glyphicon glyphicon-step-backward" id="reverse" title="Step backward"></button>');
 
     // create range input element
     $('#timeSliderWrapper').append('<div id="range-slider-wrapper"><input id="range-slider" type="range"></div>');
 
     // range slider buttons
-    $('#timeSliderWrapper').append('<button class="skip btn glyphicon glyphicon-step-forward" id="forward"></button>');
+    $('#timeSliderWrapper').append('<button class="skip btn glyphicon glyphicon-step-forward" id="forward" title="Step forward"></button>');
 
     // Month indicator
     $('#timeSliderWrapper').append('<div class="" id="monthIndicator">OCT</div>');
@@ -371,14 +370,14 @@ function createSequenceControls(map, attributes) {
         //get the old index value
         var index = $('#range-slider').val();
 
-        //Step 6: increment or decrement depending on button clicked
+        // Increment or decrement depending on button clicked
         if ($(this).attr('id') == 'forward') {
             index++;
-            //Step 7: if past the last attribute, wrap around to first attribute
+            // If past the last attribute, wrap around to first attribute
             index = index > 11 ? 0 : index;
         } else if ($(this).attr('id') == 'reverse') {
             index--;
-            //Step 7: if past the first attribute, wrap around to last attribute
+            // If past the first attribute, wrap around to last attribute
             index = index < 0 ? 11 : index;
         };
 
@@ -439,7 +438,7 @@ function updatePropSymbols(map, attribute) {
             // Build popup content string
             var popupContent = "<div class='currentCity'><strong>" + currentCity + "</strong> (" + attribute.substr(7) + ")</div>Juncos: " + juncoMonthVal + "<br>Tanagers: " + tanagerMonthVal + "<br><div id='explorePopupButtonWrapper'><button class='explorePopupButton btn' onclick='exploreCityRelay(" + '"' + currentCity + '"' + ")'>Explore City</button></div>";
 
-            //bind the popup to the circle marker
+            // Bind the popup to the circle marker
             layer.bindPopup(popupContent);
 
         };
@@ -484,7 +483,7 @@ function createExploreCityControls(map, cities) {
         $("#cityList").append('<li class="dropdown-item cityListItem" cityIndex="' + i + '">' + cities[i][0] + '</li>')
     };
     $("#cityList").append('<li role="separator" class="divider"></li>')
-    $("#cityList").append('<li class="dropdown-item cityListItem">Want to explore more cities? Visit the <a href="https://www.ebird.org/hotspots" target="_blank">eBird Hotspot Map</a></li>')
+    $("#cityList").append('<li class="dropdown-item cityListItem">Want to explore more? Visit the <a href="https://www.ebird.org/hotspots" target="_blank">eBird Hotspot Map</a></li>')
 
     // Clicking any city list item will zoom to the appropriate city
     $("#cityList li").click(function () {
@@ -510,7 +509,7 @@ function handleLayerZoomDisplay(map) {
             $("#timeSliderWrapper").show();
             $("#birdLegend").show();
             $("#hotspotLegend").hide();
-        }
+        };
         if (map.getZoom() >= 9) {
             $(".propSymbols").hide();
             $(".hotspots").show();
@@ -529,13 +528,8 @@ function handleLayerZoomDisplay(map) {
     })
 };
 
+// Creates listeners to open/close the About Map overlay
 function createAboutMapListeners() {
-
-    //#aboutMapUnderlay {
-    //
-    //#aboutMapOverlay {
-    //
-    //#aboutMapOverlayX {
     $(document).ready(function () {
         $("#aboutMap, #aboutMapTop").click(function () {
             $("#aboutMapUnderlay, #aboutMapOverlay").show()
@@ -545,11 +539,6 @@ function createAboutMapListeners() {
             $("#aboutMapUnderlay, #aboutMapOverlay").hide();
         });
     });
-
-
-    //    $("html").click(function () {
-    //        alert("TEST")
-    //    });
 
 };
 
