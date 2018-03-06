@@ -6,7 +6,21 @@
 // MAIN function, everything starts here
 function main() {
 
-    // Bounds function for map initialization
+    // Detect window width for optimum default zoom level on start & resize
+    if ($(window).width() > 1200) {
+        defaultZoom = 5
+    } else {
+        defaultZoom = 4
+    };
+    $(window).resize(function () {
+        if ($(window).width() > 1200) {
+            defaultZoom = 5
+        } else {
+            defaultZoom = 4
+        };
+    });
+
+    // Map Bounds function for map initialization
     function leafletBounds(N, S, E, W) {
         var southWest = L.latLng(S, W);
         var northEast = L.latLng(N, E);
@@ -20,7 +34,7 @@ function main() {
         maxBounds: leafletBounds(60, 0, -30, -160),
         //    maxBoundsViscosity: 0.5
     });
-    mymap.setView([40, -96], 5);
+    mymap.setView([40, -97], defaultZoom);
 
     // Add basemap to map
     var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
@@ -252,8 +266,8 @@ function calcPropRadius(attValue, attTotal) {
     // Scale factor to adjust symbol size evenly
     var scaleFactor = 1.33;
 
-    // Make symbol radius, capped at 50% (Everything about 50% represented by largest symbol)
-    var radius = (monthPercent > 50 ? 50 : monthPercent) * scaleFactor
+    // Make symbol radius, capped at 40% (Everything about 40% represented by largest symbol)
+    var radius = (monthPercent > 40 ? 40 : monthPercent) * scaleFactor
 
     // Return the appropriate radius, as long as there is sufficient data for the city
     // Fixes math issue where lowdata cities returned a radius of 100
@@ -527,7 +541,7 @@ function handleLayerZoomDisplay(map) {
     // Listener for the zoom to full button
     $('#zoomFullButton').click(function () {
         //        map.setView([41, -96], 5)
-        map.flyTo([40, -96], 5, {
+        map.flyTo([40, -97], defaultZoom, {
             duration: 0.6,
         })
     })

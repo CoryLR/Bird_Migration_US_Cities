@@ -247,7 +247,7 @@ html {
     position: absolute;
     bottom: 25px;
     right: 10px;
-    height: 205px;
+    height: 180px;
     width: 280px;
     padding: 6px 10px;
     font: 14px/16px Arial, Helvetica, sans-serif;
@@ -289,14 +289,14 @@ html {
     border: 3px solid #6b6b6d;
     background: #d0cfd4;
     display: inline-block;
-    width: 130px;
-    height: 130px;
+    width: 106px;
+    height: 106px;
 }
 
 .legendCircle2 {
     position: absolute;
     bottom: 12px;
-    left: 45px;
+    left: 39px;
     border-radius: 50%;
     border: 3px solid #6b6b6d;
     background: #d0cfd4;
@@ -304,14 +304,14 @@ html {
     border: 3px solid red;
     background: #f0e4e4;
 */
-    width: 65px;
-    height: 65px;
+    width: 53px;
+    height: 53px;
 }
 
 .legendCircle3 {
     position: absolute;
     bottom: 13px;
-    left: 73px;
+    left: 61px;
     border-radius: 50%;
     border: 3px solid #6b6b6d;
     background: #6b6b6d;
@@ -328,7 +328,7 @@ html {
 }
 
 #legendValuesWrapper div {
-    padding-top: 46px
+    padding-top: 33px
 }
 
 
