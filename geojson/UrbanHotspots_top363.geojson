@@ -1,6 +1,6 @@
 {
 "type": "FeatureCollection",
-"name": "UrbanHotspots_top369",
+"name": "UrbanHotspots_top363",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "SUM_OBS_NU": 2019.0, "HOTSPOT": "Alameda Bridge & Open Space", "CITY": "Albuquerque", "Popularity": 3, "FID_1": 8788, "LOCALITY": "Alameda Bridge & Open Space", "LOCALITY_I": "L628928", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -106.641645999781588, 35.195974700036189 ] } },
@@ -46,7 +46,6 @@
 { "type": "Feature", "properties": { "SUM_OBS_NU": 28.0, "HOTSPOT": "Capitol Lake \/ Arsenal Park", "CITY": "Baton Rouge", "Popularity": 1, "FID_1": 6236, "LOCALITY": "Capitol Lake \/ Arsenal Park", "LOCALITY_I": "L454444", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -91.185150099798676, 30.459920000053977 ] } },
 { "type": "Feature", "properties": { "SUM_OBS_NU": 63.0, "HOTSPOT": "Frenchtown Conservation Area", "CITY": "Baton Rouge", "Popularity": 2, "FID_1": 26454, "LOCALITY": "Frenchtown Conservation Area", "LOCALITY_I": "L881854", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -90.981559800222215, 30.471164999882497 ] } },
 { "type": "Feature", "properties": { "SUM_OBS_NU": 127.0, "HOTSPOT": "LSU Campus", "CITY": "Baton Rouge", "Popularity": 3, "FID_1": 6215, "LOCALITY": "LSU Campus", "LOCALITY_I": "L366269", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -91.176102499915231, 30.40903299988658 ] } },
-{ "type": "Feature", "properties": { "SUM_OBS_NU": 24.0, "HOTSPOT": "LSU Campus--Campus Lake", "CITY": "Baton Rouge", "Popularity": 1, "FID_1": 6226, "LOCALITY": "LSU Campus--Campus Lake", "LOCALITY_I": "L3612746", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -91.172635, 30.408501 ] } },
 { "type": "Feature", "properties": { "SUM_OBS_NU": 30.0, "HOTSPOT": "LSU Campus--The Enchanted Forest", "CITY": "Baton Rouge", "Popularity": 1, "FID_1": 49456, "LOCALITY": "LSU Campus--The Enchanted Forest", "LOCALITY_I": "L4282957", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -91.180643999860379, 30.416976300207985 ] } },
 { "type": "Feature", "properties": { "SUM_OBS_NU": 16.0, "HOTSPOT": "Lake Elmo SP", "CITY": "Billings", "Popularity": 1, "FID_1": 8252, "LOCALITY": "Lake Elmo SP", "LOCALITY_I": "L1320654", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -108.480978, 45.8397867 ] } },
 { "type": "Feature", "properties": { "SUM_OBS_NU": 18.0, "HOTSPOT": "Pictograph Cave SP", "CITY": "Billings", "Popularity": 1, "FID_1": 0, "LOCALITY": null, "LOCALITY_I": "L575269", "LOCALITY_T": "H" }, "geometry": { "type": "Point", "coordinates": [ -108.432271, 45.7378712 ] } },

@@ -17,9 +17,6 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Main JS -->
-    <script src="js/script.js"></script>
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -27,6 +24,7 @@
 
 <body>
 
+    <!--  Title elements  -->
     <div id="titleBreak">VS</div>
     <div id="titleJunco">
         <div id="titleTextJunco">
@@ -40,16 +38,16 @@
         </div>
     </div>
     <img src="img/Sibley_Scarlet-Tanager3.png" id="titlePicTanager">
-
-    <div id="subTitle">JOURNEY THROUGH URBAN AMERICA</div>
-
-    <div id="hotspotTitle">LOCAL BIRD HOTSPOTS</div>
+    <div id="subTitle">&bull; JOURNEY THROUGH URBAN AMERICA &bull;</div>
 
 
+    <!--  Timeslider, the rest gets filled in by JavaScript  -->
     <div id="timeSliderWrapper"></div>
 
+    <!--  Zoom to full / Reset Zoom button  -->
     <div id="zoomFullButton" title="Reset zoom"><span class="glyphicon glyphicon-globe"></span></div>
 
+    <!--  Explore a City button  -->
     <div class="dropdown dropup" id="exploreCityWrapper">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Explore a City
@@ -60,13 +58,9 @@
         </div>
     </div>
 
-    <div id="mapWrapper">
-        <div id="map"></div>
-        <!-- Leaflet map -->
-    </div>
-
+    <!--  Main legend for proportional symbols  -->
     <div id="birdLegend">
-        <div id="legendTitle">BIRD SIGHTINGS (% of annual)<br><span id="legendJuncoColor">Dark-eyed Junco</span> or <span id="legendTanagerColor">Summer Tanager</span><span id="legendMonthIndicator"></span></div>
+        <div id="legendTitle"><strong>BIRD SIGHTINGS </strong> (<span id="legendMonth">OCT</span> % of annual)<br><span id="legendJuncoColor">Dark-eyed Junco</span> or <span id="legendTanagerColor">Summer Tanager</span><span id="legendMonthIndicator"></span></div>
         <div id="symbolsContainer">
             <div class="legendCircle1"></div>
             <div class="legendCircle2"></div>
@@ -78,8 +72,10 @@
             <div id="legendVal3">. . . . . . . . . . . . 0% / Low Data</div>
         </div>
     </div>
+
+    <!--  Hotspot legend, appears when zoomed in  -->
     <div id="hotspotLegend">
-        <div id="hotspot_legendTitle">LOCAL BIRD HOTSPOTS<br>High Junco or Tanager Counts<span id="hotspot_legendMonthIndicator"></span></div>
+        <div id="hotspot_legendTitle"><strong>LOCAL BIRD HOTSPOTS</strong><br>High Junco or Tanager Counts<span id="hotspot_legendMonthIndicator"></span></div>
         <div id="hotspot_symbolsContainer">
             <div class="hotspot_legendCircle1"></div>
             <div class="hotspot_legendCircle2"></div>
@@ -92,8 +88,13 @@
         </div>
     </div>
 
+    <!-- Leaflet map -->
+    <div id="mapWrapper">
+        <div id="map"></div>
+    </div>
+
     <!-- Main Leaflet JS (Must be after #map in DOM) -->
-    <script src="js/leaflet.js"></script>
+    <script src="js/script.js"></script>
 
     <!-- Bootstrap JS-->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
